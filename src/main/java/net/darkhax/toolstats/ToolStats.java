@@ -13,10 +13,10 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
-import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig.Type;
+import net.minecraftforge.fml.loading.FMLEnvironment;
 
 @Mod("toolstats")
 public class ToolStats {
@@ -26,8 +26,11 @@ public class ToolStats {
     
     public ToolStats() {
         
-        ModLoadingContext.get().registerConfig(Type.CLIENT, this.config.getSpec());        
-        DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> MinecraftForge.EVENT_BUS.addListener(EventPriority.HIGH, this::onItemTooltip));
+    	if (FMLEnvironment.dist == Dist.CLIENT) {
+    		
+            ModLoadingContext.get().registerConfig(Type.CLIENT, this.config.getSpec());        
+            MinecraftForge.EVENT_BUS.addListener(EventPriority.HIGH, this::onItemTooltip);
+    	}
     }
     
     private void onItemTooltip(ItemTooltipEvent event) {
@@ -41,12 +44,12 @@ public class ToolStats {
     		
     		if (config.shouldShowHarvestLevel()) {
     			
-    			event.getToolTip().add(new TranslationTextComponent("tooltip.toolstats.harvestlevel", tier.getHarvestLevel()).applyTextStyle(TextFormatting.DARK_GREEN));
+    			event.getToolTip().add(new TranslationTextComponent("tooltip.toolstats.harvestlevel", tier.getHarvestLevel()).func_240701_a_(TextFormatting.DARK_GREEN));
     		}
     		
     		if (config.shouldShowEfficiency()) {
     			
-    			event.getToolTip().add(new TranslationTextComponent("tooltip.toolstats.efficiency", format.format(tier.getEfficiency())).applyTextStyle(TextFormatting.DARK_GREEN));
+    			event.getToolTip().add(new TranslationTextComponent("tooltip.toolstats.efficiency", format.format(tier.getEfficiency())).func_240701_a_(TextFormatting.DARK_GREEN));
     		}
     	}
     	
@@ -56,7 +59,7 @@ public class ToolStats {
     		
     		if (enchantability > 0) {
     			
-    			event.getToolTip().add(new TranslationTextComponent("tooltip.toolstats.enchantability", enchantability).applyTextStyle(TextFormatting.DARK_GREEN));
+    			event.getToolTip().add(new TranslationTextComponent("tooltip.toolstats.enchantability", enchantability).func_240701_a_(TextFormatting.DARK_GREEN));
     		}
     	}
     }
