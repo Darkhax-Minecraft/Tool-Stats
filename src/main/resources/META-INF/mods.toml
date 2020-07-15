@@ -4,6 +4,7 @@ issueTrackerURL="https://github.com/Darkhax-Minecraft/tool-stats/issues"
 
 [[mods]]
 modId="toolstats"
+updateJSONURL="https://updates.blamejared.com/get?n=toolstats&gv=1.16.1"
 version="${version}"
 displayName="${mod_name}"
 displayURL="${mod_download}"
