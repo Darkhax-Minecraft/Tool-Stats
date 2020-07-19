@@ -1,12 +1,15 @@
 package net.darkhax.toolstats;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.EnchantmentScreen;
 import net.minecraft.item.IItemTier;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.TieredItem;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
@@ -31,7 +34,9 @@ public class ToolStats {
     }
     
     private void onItemTooltip(ItemTooltipEvent event) {
-        
+    	
+    	final List<ITextComponent> additions = new ArrayList<>();
+    	
     	final ItemStack stack = event.getItemStack();
     	
     	if (stack.getItem() instanceof TieredItem) {
@@ -41,12 +46,12 @@ public class ToolStats {
     		
     		if (config.shouldShowHarvestLevel()) {
     			
-    			event.getToolTip().add(new TranslationTextComponent("tooltip.toolstats.harvestlevel", tier.getHarvestLevel()).applyTextStyle(TextFormatting.DARK_GREEN));
+    			additions.add(new TranslationTextComponent("tooltip.toolstats.harvestlevel", tier.getHarvestLevel()).applyTextStyle(TextFormatting.DARK_GREEN));
     		}
     		
     		if (config.shouldShowEfficiency()) {
     			
-    			event.getToolTip().add(new TranslationTextComponent("tooltip.toolstats.efficiency", format.format(tier.getEfficiency())).applyTextStyle(TextFormatting.DARK_GREEN));
+    			additions.add(new TranslationTextComponent("tooltip.toolstats.efficiency", format.format(tier.getEfficiency())).applyTextStyle(TextFormatting.DARK_GREEN));
     		}
     	}
     	
@@ -56,8 +61,11 @@ public class ToolStats {
     		
     		if (enchantability > 0) {
     			
-    			event.getToolTip().add(new TranslationTextComponent("tooltip.toolstats.enchantability", enchantability).applyTextStyle(TextFormatting.DARK_GREEN));
+    			additions.add(new TranslationTextComponent("tooltip.toolstats.enchantability", enchantability).applyTextStyle(TextFormatting.DARK_GREEN));
     		}
     	}
+    	
+    	final int offset = Math.max(0, event.getFlags().isAdvanced() ? event.getToolTip().size() - (stack.hasTag() ? 2 : 1) : event.getToolTip().size());
+    	event.getToolTip().addAll(offset, additions);
     }
 }
