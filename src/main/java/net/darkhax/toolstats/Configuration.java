@@ -10,6 +10,7 @@ public class Configuration {
     private final BooleanValue showEnchantability;
     private final BooleanValue showHarvestLevel;
     private final BooleanValue showEfficiency;
+    private final BooleanValue showRepairCost;
     
     public Configuration() {
         
@@ -27,6 +28,9 @@ public class Configuration {
         
         builder.comment("Should mining efficiency be shown?");
         this.showEfficiency = builder.define("show-efficiency", true);
+        
+        builder.comment("Should repair cost be shown in the anvil GUI?");
+        this.showRepairCost = builder.define("show-repair-cost", true);
         
         builder.pop();
         this.spec = builder.build();
@@ -50,5 +54,10 @@ public class Configuration {
     public boolean shouldShowEfficiency() {
     	
     	return this.showEfficiency.get();
+    }
+    
+    public boolean shouldShowRepairCost() {
+    	
+    	return this.showRepairCost.get();
     }
 }

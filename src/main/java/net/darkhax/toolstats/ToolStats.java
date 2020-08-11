@@ -6,6 +6,7 @@ import java.util.List;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.EnchantmentScreen;
+import net.minecraft.client.gui.screen.inventory.AnvilScreen;
 import net.minecraft.item.IItemTier;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.TieredItem;
@@ -65,6 +66,16 @@ public class ToolStats {
     		if (enchantability > 0) {
     			
     			additions.add(new TranslationTextComponent("tooltip.toolstats.enchantability", enchantability).func_240701_a_(TextFormatting.DARK_GREEN));
+    		}
+    	}
+    	
+    	if (config.shouldShowRepairCost() && Minecraft.getInstance().currentScreen instanceof AnvilScreen) {
+    		
+    		final int repairCost = stack.getRepairCost();
+    		
+    		if (repairCost > 0) {
+    			
+    			additions.add(new TranslationTextComponent("tooltip.toolstats.repaircost", repairCost).func_240701_a_(TextFormatting.DARK_GREEN));
     		}
     	}
     	
