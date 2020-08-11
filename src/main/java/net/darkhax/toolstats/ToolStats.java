@@ -79,7 +79,32 @@ public class ToolStats {
     		}
     	}
     	
-    	final int offset = Math.max(0, event.getFlags().isAdvanced() ? event.getToolTip().size() - (stack.hasTag() ? 2 : 1) : event.getToolTip().size());
-    	event.getToolTip().addAll(offset, additions);
+    	
+    	event.getToolTip().addAll(getInsertOffset(event.getFlags().isAdvanced(), event.getToolTip().size(), stack), additions);
+    }
+    
+    private static int getInsertOffset(boolean advanced, int tooltipSize, ItemStack stack) {
+    	
+    	int offset = 0;
+    	
+    	if (advanced) {
+    		
+    		// item id
+    		offset++;
+    		
+    		// tag count
+    		if (stack.hasTag()) {
+    			
+    			offset++;
+    		}
+    		
+    		// durability
+    		if (stack.isDamaged()) {
+    			
+    			offset++;
+    		}
+    	}
+    	
+    	return Math.max(0, tooltipSize - offset);
     }
 }
