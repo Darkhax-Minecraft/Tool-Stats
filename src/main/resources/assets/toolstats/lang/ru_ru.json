@@ -1,1 +1,5 @@
-{"tooltip.toolstats.harvestlevel":" %d Уровень добычи","tooltip.toolstats.efficiency":" %s Эффективность копания","tooltip.toolstats.enchantability":" %d Возможность зачаровать"}
+{
+  "tooltip.toolstats.harvestlevel": " %d Уровень добычи",
+  "tooltip.toolstats.efficiency": " %s Эффективность копания",
+  "tooltip.toolstats.enchantability": " %d Возможность зачаровать"
+}
