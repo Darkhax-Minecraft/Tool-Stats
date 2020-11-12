@@ -1,0 +1,6 @@
+{
+  "tooltip.toolstats.harvestlevel": " %d уровень собирания",
+  "tooltip.toolstats.efficiency": " %s Эффективность добычи",
+  "tooltip.toolstats.enchantability": " %d зачарованность",
+  "tooltip.toolstats.repaircost": " Стоимость починки: %d"
+}
