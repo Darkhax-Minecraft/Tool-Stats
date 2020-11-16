@@ -50,12 +50,12 @@ public class ToolStats {
     		
     		if (config.shouldShowHarvestLevel()) {
     			
-    			additions.add(new TranslationTextComponent("tooltip.toolstats.harvestlevel", tier.getHarvestLevel()).func_240701_a_(TextFormatting.DARK_GREEN));
+    			additions.add(new TranslationTextComponent("tooltip.toolstats.harvestlevel", tier.getHarvestLevel()).mergeStyle(TextFormatting.DARK_GREEN));
     		}
     		
     		if (config.shouldShowEfficiency()) {
     			
-    			additions.add(new TranslationTextComponent("tooltip.toolstats.efficiency", format.format(tier.getEfficiency())).func_240701_a_(TextFormatting.DARK_GREEN));
+    			additions.add(new TranslationTextComponent("tooltip.toolstats.efficiency", format.format(tier.getEfficiency())).mergeStyle(TextFormatting.DARK_GREEN));
     		}
     	}
     	
@@ -65,7 +65,7 @@ public class ToolStats {
     		
     		if (enchantability > 0) {
     			
-    			additions.add(new TranslationTextComponent("tooltip.toolstats.enchantability", enchantability).func_240701_a_(TextFormatting.DARK_GREEN));
+    			additions.add(new TranslationTextComponent("tooltip.toolstats.enchantability", enchantability).mergeStyle(TextFormatting.DARK_GREEN));
     		}
     	}
     	
@@ -75,10 +75,14 @@ public class ToolStats {
     		
     		if (repairCost > 0) {
     			
-    			additions.add(new TranslationTextComponent("tooltip.toolstats.repaircost", repairCost).func_240701_a_(TextFormatting.DARK_GREEN));
+    			additions.add(new TranslationTextComponent("tooltip.toolstats.repaircost", repairCost).mergeStyle(TextFormatting.DARK_GREEN));
     		}
     	}
     	
+    	if (config.shouldShowDurability() && stack.isDamageable()) {
+    		
+    		additions.add(new TranslationTextComponent("item.durability", stack.getMaxDamage() - stack.getDamage(), stack.getMaxDamage()));
+    	}
     	
     	event.getToolTip().addAll(getInsertOffset(event.getFlags().isAdvanced(), event.getToolTip().size(), stack), additions);
     }

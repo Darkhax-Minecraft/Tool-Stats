@@ -11,6 +11,7 @@ public class Configuration {
     private final BooleanValue showHarvestLevel;
     private final BooleanValue showEfficiency;
     private final BooleanValue showRepairCost;
+    private final BooleanValue showDurability;
     
     public Configuration() {
         
@@ -31,6 +32,9 @@ public class Configuration {
         
         builder.comment("Should repair cost be shown in the anvil GUI?");
         this.showRepairCost = builder.define("show-repair-cost", true);
+        
+        builder.comment("Should the durability be shown on the tool?");
+        this.showDurability = builder.define("show-durability", true);
         
         builder.pop();
         this.spec = builder.build();
@@ -59,5 +63,10 @@ public class Configuration {
     public boolean shouldShowRepairCost() {
     	
     	return this.showRepairCost.get();
+    }
+    
+    public boolean shouldShowDurability() {
+    	
+    	return this.showDurability.get();
     }
 }
