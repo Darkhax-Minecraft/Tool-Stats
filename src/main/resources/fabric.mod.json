@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "id": "toolstats",
+  "version": "${version}",
+  "name": "Tool Stats",
+  "description": "Adds stats to the tooltips of different tools.",
+  "authors": [
+    "Darkhax"
+  ],
+  "contact": {
+    "homepage": "https://www.curseforge.com/minecraft/mc-mods/tool-stats",
+    "sources": "https://github.com/Darkhax-Minecraft/Tool-Stats",
+    "issues": "https://github.com/Darkhax-Minecraft/Tool-Stats/issues"
+  },
+  "license": "LGPL v2.1",
+  "environment": "*",
+  "entrypoints": {
+    "client": [
+      "net.darkhax.toolstats.ToolStats"
+    ]
+  },
+  "depends": {
+    "fabricloader": ">=0.7.4",
+    "fabric": "*",
+    "minecraft": "1.16.x"
+  },
+  "custom": {
+      "modmenu:clientsideOnly": true
+  }
+}

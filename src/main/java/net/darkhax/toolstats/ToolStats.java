@@ -4,93 +4,71 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang3.tuple.Pair;
-
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screen.EnchantmentScreen;
-import net.minecraft.client.gui.screen.inventory.AnvilScreen;
-import net.minecraft.item.IItemTier;
+import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.screen.ingame.AnvilScreen;
+import net.minecraft.client.gui.screen.ingame.EnchantmentScreen;
+import net.minecraft.client.item.TooltipContext;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.TieredItem;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.entity.player.ItemTooltipEvent;
-import net.minecraftforge.eventbus.api.EventPriority;
-import net.minecraftforge.fml.ExtensionPoint;
-import net.minecraftforge.fml.ModLoadingContext;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.config.ModConfig.Type;
-import net.minecraftforge.fml.loading.FMLEnvironment;
-import net.minecraftforge.fml.network.FMLNetworkConstants;
+import net.minecraft.item.ToolItem;
+import net.minecraft.item.ToolMaterial;
+import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableText;
+import net.minecraft.util.Formatting;
 
-@Mod("toolstats")
-public class ToolStats {
-    
-    private final Configuration config = new Configuration();
-    private final DecimalFormat format = new DecimalFormat("0.##");
-    
-    public ToolStats() {
+@Environment(EnvType.CLIENT)
+public class ToolStats implements ClientModInitializer {
+	
+	private final DecimalFormat format = new DecimalFormat("0.##");
+	
+	@Override
+	public void onInitializeClient() {
+		
+		ItemTooltipCallback.EVENT.register(this::onTooltipDisplayed);
+	}
+	
+    private void onTooltipDisplayed (ItemStack stack, TooltipContext context, List<Text> lines) {
         
-        ModLoadingContext.get().registerExtensionPoint(ExtensionPoint.DISPLAYTEST, () -> Pair.of( () -> FMLNetworkConstants.IGNORESERVERONLY, (a, b) -> true));
+        final List<Text> additions = new ArrayList<>();
         
-        if (FMLEnvironment.dist == Dist.CLIENT) {
+        if (stack.getItem() instanceof ToolItem) {
             
-            ModLoadingContext.get().registerConfig(Type.CLIENT, this.config.getSpec());
-            MinecraftForge.EVENT_BUS.addListener(EventPriority.HIGH, this::onItemTooltip);
-        }
-    }
-    
-    private void onItemTooltip (ItemTooltipEvent event) {
-        
-        final List<ITextComponent> additions = new ArrayList<>();
-        
-        final ItemStack stack = event.getItemStack();
-        
-        if (stack.getItem() instanceof TieredItem) {
+            final ToolItem item = (ToolItem) stack.getItem();
+            final ToolMaterial tier = item.getMaterial();
             
-            final TieredItem item = (TieredItem) stack.getItem();
-            final IItemTier tier = item.getTier();
+            additions.add(new TranslatableText("tooltip.toolstats.harvestlevel", tier.getMiningLevel()).formatted(Formatting.DARK_GREEN));
+            additions.add(new TranslatableText("tooltip.toolstats.efficiency", this.format.format(tier.getMiningSpeedMultiplier())).formatted(Formatting.DARK_GREEN));
             
-            if (this.config.shouldShowHarvestLevel()) {
+            if (MinecraftClient.getInstance().currentScreen instanceof EnchantmentScreen) {
                 
-                additions.add(new TranslationTextComponent("tooltip.toolstats.harvestlevel", tier.getHarvestLevel()).mergeStyle(TextFormatting.DARK_GREEN));
-            }
-            
-            if (this.config.shouldShowEfficiency()) {
+                final int enchantability = tier.getEnchantability();
                 
-                additions.add(new TranslationTextComponent("tooltip.toolstats.efficiency", this.format.format(tier.getEfficiency())).mergeStyle(TextFormatting.DARK_GREEN));
+                if (enchantability > 0) {
+                    
+                    additions.add(new TranslatableText("tooltip.toolstats.enchantability", enchantability).formatted(Formatting.DARK_GREEN));
+                }
             }
         }
         
-        if (this.config.shouldShowEnchantability() && (this.config.shouldShowEnchantabilityAlways() || Minecraft.getInstance().currentScreen instanceof EnchantmentScreen)) {
-            
-            final int enchantability = stack.getItemEnchantability();
-            
-            if (enchantability > 0) {
-                
-                additions.add(new TranslationTextComponent("tooltip.toolstats.enchantability", enchantability).mergeStyle(TextFormatting.DARK_GREEN));
-            }
-        }
-        
-        if (this.config.shouldShowRepairCost() && Minecraft.getInstance().currentScreen instanceof AnvilScreen) {
+        if (MinecraftClient.getInstance().currentScreen instanceof AnvilScreen) {
             
             final int repairCost = stack.getRepairCost();
             
             if (repairCost > 0) {
                 
-                additions.add(new TranslationTextComponent("tooltip.toolstats.repaircost", repairCost).mergeStyle(TextFormatting.DARK_GREEN));
+                additions.add(new TranslatableText("tooltip.toolstats.repaircost", repairCost).formatted(Formatting.DARK_GREEN));
             }
         }
         
-        if (this.config.shouldShowDurability() && stack.isDamageable()) {
+        if (stack.isDamageable()) {
             
-            additions.add(new TranslationTextComponent("item.durability", stack.getMaxDamage() - stack.getDamage(), stack.getMaxDamage()));
+            additions.add(new TranslatableText("item.durability", stack.getMaxDamage() - stack.getDamage(), stack.getMaxDamage()));
         }
         
-        event.getToolTip().addAll(getInsertOffset(event.getFlags().isAdvanced(), event.getToolTip().size(), stack), additions);
+        lines.addAll(getInsertOffset(context.isAdvanced(), lines.size(), stack), additions);
     }
     
     private static int getInsertOffset (boolean advanced, int tooltipSize, ItemStack stack) {
