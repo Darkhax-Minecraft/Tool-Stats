@@ -81,7 +81,7 @@ public class ToolStats implements ClientModInitializer {
             offset++;
             
             // tag count
-            if (stack.hasTag()) {
+            if (stack.hasNbt()) {
                 
                 offset++;
             }
