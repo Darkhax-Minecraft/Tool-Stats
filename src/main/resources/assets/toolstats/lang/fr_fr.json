@@ -1,0 +1,6 @@
+{
+  "tooltip.toolstats.harvestlevel": " %d de niveau de minage",
+  "tooltip.toolstats.efficiency": " %s de vitesse de minage",
+  "tooltip.toolstats.enchantability": " %d d'enchantabilité",
+  "tooltip.toolstats.repaircost": " Coût de réparation : %d"
+}
