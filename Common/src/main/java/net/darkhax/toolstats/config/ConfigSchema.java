@@ -25,14 +25,14 @@ public class ConfigSchema {
 
     public static ConfigSchema load(File configFile) {
 
-        final ConfigSchema defaultConfig = new ConfigSchema();
+        ConfigSchema config = new ConfigSchema();
 
         // Attempt to load existing config file
         if (configFile.exists()) {
 
             try (FileReader reader = new FileReader(configFile)) {
 
-                return Constants.GSON.fromJson(reader, ConfigSchema.class);
+                config = Constants.GSON.fromJson(reader, ConfigSchema.class);
             }
 
             catch (IOException e) {
@@ -50,8 +50,8 @@ public class ConfigSchema {
 
         try (FileWriter writer = new FileWriter(configFile)) {
 
-            Constants.GSON.toJson(defaultConfig, writer);
-            Constants.LOG.info("Default configuration file generated at {}.", configFile.getAbsolutePath());
+            Constants.GSON.toJson(config, writer);
+            Constants.LOG.info("Saving config to {}.", configFile.getAbsolutePath());
         }
 
         catch (IOException e) {
@@ -61,6 +61,6 @@ public class ConfigSchema {
         }
 
 
-        return defaultConfig;
+        return config;
     }
 }
