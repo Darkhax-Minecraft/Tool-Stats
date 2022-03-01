@@ -14,6 +14,7 @@ authors = "${mod_author}"
 description = '''
 ${mod_description}
 '''
+itemIcon = "minecraft:netherite_sword"
 
 [[dependencies.${ mod_id }]]
 modId = "forge"
