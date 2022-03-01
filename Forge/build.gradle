@@ -32,6 +32,9 @@ minecraft {
                 arg "-mixin.config=${mod_id}.mixins.json"
             }
 
+            property 'mixin.env.remapRefMap', 'true'
+            property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
+
             mods {
                 modClientRun {
                     source sourceSets.main
@@ -49,6 +52,9 @@ minecraft {
                 arg "-mixin.config=${mod_id}.mixins.json"
             }
 
+            property 'mixin.env.remapRefMap', 'true'
+            property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
+
             mods {
                 modServerRun {
                     source sourceSets.main
@@ -64,6 +70,8 @@ dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
     implementation fg.deobf("mezz.jei:jei-1.18.1:${jei_version}")
     implementation fg.deobf("curse.maven:catalogue-459701:${catalogue_version}")
+    implementation fg.deobf("curse.maven:lazydfu-460819:3544496")
+    implementation fg.deobf("net.darkhax.bookshelf:Bookshelf-Forge-1.18.1:${project.ext.bookshelf_version}")
     compileOnly project(":Common")
 
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
