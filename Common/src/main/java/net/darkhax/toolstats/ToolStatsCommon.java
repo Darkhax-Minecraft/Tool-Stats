@@ -76,7 +76,7 @@ public class ToolStatsCommon {
             }
         }
 
-        if (this.config.showDurability && stack.isDamageableItem()) {
+        if (!context.isAdvanced() && this.config.showDurability && stack.isDamageableItem()) {
 
             if (this.config.alwaysShowDurability || stack.isDamaged()) {
 
