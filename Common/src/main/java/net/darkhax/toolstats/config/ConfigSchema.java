@@ -1,8 +1,6 @@
 package net.darkhax.toolstats.config;
 
 import net.darkhax.toolstats.Constants;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.SpyglassItem;
 
 import java.io.File;
 import java.io.FileReader;
