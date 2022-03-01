@@ -25,14 +25,18 @@ public class ToolStatsCommon {
 
     private final ConfigSchema config;
     private final Function<ItemStack, Integer> enchantabilityResolver;
-    private final Map<Tier, TierInfo> tierInfoCache = new HashMap<>();
+    private final Function<Tier, Integer> harvestLevelResolver;
+
+    private final Map<Tier, Component> digSpeedCache = new HashMap<>();
     private final Int2ObjectMap<Component> enchantabilityCache = new Int2ObjectOpenHashMap<>();
     private final Int2ObjectMap<Component> repairCostCache = new Int2ObjectOpenHashMap<>();
+    private final Int2ObjectMap<Component> harvestLevelCache = new Int2ObjectOpenHashMap<>();
 
-    public ToolStatsCommon(Path configDir, Function<ItemStack, Integer> enchantabilityResolver) {
+    public ToolStatsCommon(Path configDir, Function<ItemStack, Integer> enchantabilityResolver, Function<Tier, Integer> harvestLevelResolver) {
 
         this.config = ConfigSchema.load(configDir.resolve(Constants.MOD_ID + ".json").toFile());
         this.enchantabilityResolver = enchantabilityResolver;
+        this.harvestLevelResolver = harvestLevelResolver;
     }
 
     public void displayTooltipInfo(ItemStack stack, TooltipFlag context, List<Component> tooltip) {
@@ -41,16 +45,14 @@ public class ToolStatsCommon {
 
         if (stack.getItem() instanceof TieredItem tieredItem) {
 
-            final TierInfo tierInfo = tierInfoCache.computeIfAbsent(tieredItem.getTier(), TierInfo::new);
-
             if (this.config.showHarvestLevel) {
 
-                additions.add(tierInfo.harvestLevel());
+                additions.add(this.harvestLevelCache.computeIfAbsent(harvestLevelResolver.apply(tieredItem.getTier()), lvl -> new TranslatableComponent("tooltip.toolstats.harvestlevel", lvl).withStyle(ChatFormatting.DARK_GREEN)));
             }
 
             if (this.config.showEfficiency) {
 
-                additions.add(tierInfo.digSpeed());
+                additions.add(digSpeedCache.computeIfAbsent(tieredItem.getTier(), tier -> new TranslatableComponent("tooltip.toolstats.efficiency", Constants.DECIMAL_FORMAT.format(tier.getSpeed())).withStyle(ChatFormatting.DARK_GREEN)));
             }
         }
 
