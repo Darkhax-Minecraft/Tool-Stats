@@ -27,12 +27,12 @@ import java.util.function.Function;
 
 public class ToolStatsCommon {
 
-    private static Tag<Item> TAG_IGNORE = itemTag("ignored");
-    private static Tag<Item> TAG_IGNORE_HARVEST_LEVEL = itemTag("ignore_harvest_level");
-    private static Tag<Item> TAG_IGNORE_DIG_SPEED = itemTag("ignore_dig_speed");
-    private static Tag<Item> TAG_IGNORE_ENCHANTABILITY = itemTag("ignore_enchantability");
-    private static Tag<Item> TAG_IGNORE_REPAIR_COST = itemTag("ignore_repair_cost");
-    private static Tag<Item> TAG_IGNORE_DURABILITY = itemTag("ignore_durability");
+    private final Tag<Item> TAG_IGNORE = itemTag("ignored");
+    private final Tag<Item> TAG_IGNORE_HARVEST_LEVEL = itemTag("ignore_harvest_level");
+    private final Tag<Item> TAG_IGNORE_DIG_SPEED = itemTag("ignore_dig_speed");
+    private final Tag<Item> TAG_IGNORE_ENCHANTABILITY = itemTag("ignore_enchantability");
+    private final Tag<Item> TAG_IGNORE_REPAIR_COST = itemTag("ignore_repair_cost");
+    private final Tag<Item> TAG_IGNORE_DURABILITY = itemTag("ignore_durability");
 
     private final ConfigSchema config;
     private final Function<ItemStack, Integer> enchantabilityResolver;
@@ -48,9 +48,11 @@ public class ToolStatsCommon {
         this.config = ConfigSchema.load(configDir.resolve(Constants.MOD_ID + ".json").toFile());
         this.enchantabilityResolver = enchantabilityResolver;
         this.harvestLevelResolver = harvestLevelResolver;
+
+        Services.EVENTS.addItemTooltipListener(this::displayTooltipInfo);
     }
 
-    public void displayTooltipInfo(ItemStack stack, TooltipFlag context, List<Component> tooltip) {
+    private void displayTooltipInfo(ItemStack stack, List<Component> tooltip, TooltipFlag context) {
 
         final Item item = stack.getItem();
 

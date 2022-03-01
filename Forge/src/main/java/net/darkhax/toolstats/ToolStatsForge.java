@@ -5,9 +5,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.Tiers;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.TierSortingRegistry;
-import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.fml.IExtensionPoint;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
@@ -17,15 +15,24 @@ import net.minecraftforge.network.NetworkConstants;
 
 import java.util.Map;
 import java.util.WeakHashMap;
-import java.util.function.Consumer;
 
 @Mod(Constants.MOD_ID)
 public class ToolStatsForge {
 
-    private static final Map<Tier, Integer> tierCache = new WeakHashMap<>();
-    private static final Map<Integer, Tier> vanillaTierLevels = Map.of(0, Tiers.WOOD, 1, Tiers.STONE, 2, Tiers.IRON, 3, Tiers.DIAMOND, 4, Tiers.NETHERITE);
+    private final Map<Tier, Integer> tierCache = new WeakHashMap<>();
+    private final Map<Integer, Tier> vanillaTierLevels = Map.of(0, Tiers.WOOD, 1, Tiers.STONE, 2, Tiers.IRON, 3, Tiers.DIAMOND, 4, Tiers.NETHERITE);
 
-    public static int getTierLevel(Tier tier) {
+    public ToolStatsForge() {
+
+        ModLoadingContext.get().registerExtensionPoint(IExtensionPoint.DisplayTest.class, () -> new IExtensionPoint.DisplayTest(() -> NetworkConstants.IGNORESERVERONLY, (a, b) -> true));
+
+        if (Environment.get().getDist() == Dist.CLIENT) {
+
+            final ToolStatsCommon toolStats = new ToolStatsCommon(FMLPaths.CONFIGDIR.get(), ItemStack::getItemEnchantability, this::getTierLevel);
+        }
+    }
+
+    public int getTierLevel(Tier tier) {
 
         if (!tierCache.containsKey(tier)) {
 
@@ -60,16 +67,5 @@ public class ToolStatsForge {
         }
 
         return tierCache.computeIfAbsent(tier, t -> -1);
-    }
-
-    public ToolStatsForge() {
-
-        ModLoadingContext.get().registerExtensionPoint(IExtensionPoint.DisplayTest.class, () -> new IExtensionPoint.DisplayTest(() -> NetworkConstants.IGNORESERVERONLY, (a, b) -> true));
-
-        if (Environment.get().getDist() == Dist.CLIENT) {
-
-            final ToolStatsCommon toolStats = new ToolStatsCommon(FMLPaths.CONFIGDIR.get(), ItemStack::getItemEnchantability, ToolStatsForge::getTierLevel);
-            MinecraftForge.EVENT_BUS.addListener((Consumer<ItemTooltipEvent>) event -> toolStats.displayTooltipInfo(event.getItemStack(), event.getFlags(), event.getToolTip()));
-        }
     }
 }
