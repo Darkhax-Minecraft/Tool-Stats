@@ -1,9 +1,14 @@
 package net.darkhax.toolstats;
 
+import net.minecraft.core.HolderSet;
+import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.Tiers;
+import net.minecraft.world.level.block.Block;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.TierSortingRegistry;
 import net.minecraftforge.fml.IExtensionPoint;
@@ -14,6 +19,7 @@ import net.minecraftforge.forgespi.Environment;
 import net.minecraftforge.network.NetworkConstants;
 
 import java.util.Map;
+import java.util.Optional;
 import java.util.WeakHashMap;
 
 @Mod(Constants.MOD_ID)
@@ -49,7 +55,8 @@ public class ToolStatsForge {
                     final boolean isVanilla = id != null && "minecraft".equals(id.getNamespace());
 
                     // Tier is not the same as the previous one.
-                    if ((isVanilla || (currentTier.getTag() != null && !currentTier.getTag().getValues().isEmpty()))) {
+                    // TODO Previous versions checked if the custom Forge tag was empty. Tags don't work like this anymore.
+                    if ((isVanilla || (currentTier.getTag() != null && !isTagEmpty(currentTier.getTag())))) {
 
                         tierLevel++;
                     }
@@ -67,5 +74,11 @@ public class ToolStatsForge {
         }
 
         return tierCache.computeIfAbsent(tier, t -> -1);
+    }
+
+    private static boolean isTagEmpty(TagKey<Block> key) {
+
+        final Optional<HolderSet.Named<Block>> holders = Registry.BLOCK.getTag(key);
+        return holders == null || holders.isEmpty() || holders.get().size() <= 0;
     }
 }

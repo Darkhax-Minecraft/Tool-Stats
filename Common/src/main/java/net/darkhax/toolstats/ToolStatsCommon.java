@@ -12,6 +12,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.Tag;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Tier;
@@ -27,12 +28,12 @@ import java.util.function.Function;
 
 public class ToolStatsCommon {
 
-    private final Tag<Item> TAG_IGNORE = itemTag("ignored");
-    private final Tag<Item> TAG_IGNORE_HARVEST_LEVEL = itemTag("ignore_harvest_level");
-    private final Tag<Item> TAG_IGNORE_DIG_SPEED = itemTag("ignore_dig_speed");
-    private final Tag<Item> TAG_IGNORE_ENCHANTABILITY = itemTag("ignore_enchantability");
-    private final Tag<Item> TAG_IGNORE_REPAIR_COST = itemTag("ignore_repair_cost");
-    private final Tag<Item> TAG_IGNORE_DURABILITY = itemTag("ignore_durability");
+    private final TagKey<Item> TAG_IGNORE = itemTag("ignored");
+    private final TagKey<Item> TAG_IGNORE_HARVEST_LEVEL = itemTag("ignore_harvest_level");
+    private final TagKey<Item> TAG_IGNORE_DIG_SPEED = itemTag("ignore_dig_speed");
+    private final TagKey<Item> TAG_IGNORE_ENCHANTABILITY = itemTag("ignore_enchantability");
+    private final TagKey<Item> TAG_IGNORE_REPAIR_COST = itemTag("ignore_repair_cost");
+    private final TagKey<Item> TAG_IGNORE_DURABILITY = itemTag("ignore_durability");
 
     private final ConfigSchema config;
     private final Function<ItemStack, Integer> enchantabilityResolver;
@@ -56,24 +57,24 @@ public class ToolStatsCommon {
 
         final Item item = stack.getItem();
 
-        if (!TAG_IGNORE.contains(item)) {
+        if (!stack.is(TAG_IGNORE)) {
 
             final List<Component> additions = new ArrayList<>();
 
             if (stack.getItem() instanceof TieredItem tieredItem) {
 
-                if (!TAG_IGNORE_HARVEST_LEVEL.contains(item) && this.config.showHarvestLevel) {
+                if (!stack.is(TAG_IGNORE_HARVEST_LEVEL) && this.config.showHarvestLevel) {
 
                     additions.add(this.harvestLevelCache.computeIfAbsent(harvestLevelResolver.apply(tieredItem.getTier()), lvl -> new TranslatableComponent("tooltip.toolstats.harvestlevel", lvl).withStyle(ChatFormatting.DARK_GREEN)));
                 }
 
-                if (!TAG_IGNORE_DIG_SPEED.contains(item) && this.config.showEfficiency) {
+                if (!stack.is(TAG_IGNORE_DIG_SPEED) && this.config.showEfficiency) {
 
                     additions.add(digSpeedCache.computeIfAbsent(tieredItem.getTier(), tier -> new TranslatableComponent("tooltip.toolstats.efficiency", Constants.DECIMAL_FORMAT.format(tier.getSpeed())).withStyle(ChatFormatting.DARK_GREEN)));
                 }
             }
 
-            if (!TAG_IGNORE_ENCHANTABILITY.contains(item) && this.config.showEnchantability && (this.config.alwaysShowEnchantability || Minecraft.getInstance().screen instanceof EnchantmentScreen)) {
+            if (!stack.is(TAG_IGNORE_ENCHANTABILITY) && this.config.showEnchantability && (this.config.alwaysShowEnchantability || Minecraft.getInstance().screen instanceof EnchantmentScreen)) {
 
                 final int enchantability = this.enchantabilityResolver.apply(stack);
 
@@ -83,7 +84,7 @@ public class ToolStatsCommon {
                 }
             }
 
-            if (!TAG_IGNORE_REPAIR_COST.contains(item) && this.config.showRepairCost && (this.config.alwaysShowRepairCost || Minecraft.getInstance().screen instanceof AnvilScreen)) {
+            if (!stack.is(TAG_IGNORE_REPAIR_COST) && this.config.showRepairCost && (this.config.alwaysShowRepairCost || Minecraft.getInstance().screen instanceof AnvilScreen)) {
 
                 final int repairCost = stack.getBaseRepairCost();
 
@@ -93,7 +94,7 @@ public class ToolStatsCommon {
                 }
             }
 
-            if (!context.isAdvanced() && !TAG_IGNORE_DURABILITY.contains(item) && this.config.showDurability && stack.isDamageableItem()) {
+            if (!context.isAdvanced() && !stack.is(TAG_IGNORE_DURABILITY) && this.config.showDurability && stack.isDamageableItem()) {
 
                 if (this.config.alwaysShowDurability || stack.isDamaged()) {
 
@@ -133,7 +134,7 @@ public class ToolStatsCommon {
         return Math.max(0, tooltipSize - offset);
     }
 
-    private static Tag<Item> itemTag(String key) {
+    private static TagKey<Item> itemTag(String key) {
 
         return Services.TAGS.itemTag(new ResourceLocation(Constants.MOD_ID, key));
     }
