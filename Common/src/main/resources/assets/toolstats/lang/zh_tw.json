@@ -1,0 +1,6 @@
+{
+  "tooltip.toolstats.harvestlevel": " %d 收穫等級",
+  "tooltip.toolstats.efficiency": " %s 挖掘速度",
+  "tooltip.toolstats.enchantability": " %d 附魔潛力",
+  "tooltip.toolstats.repaircost": " 修復花費：%d"
+}
