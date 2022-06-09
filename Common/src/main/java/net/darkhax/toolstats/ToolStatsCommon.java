@@ -9,9 +9,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.inventory.AnvilScreen;
 import net.minecraft.client.gui.screens.inventory.EnchantmentScreen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.Tag;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -65,12 +63,12 @@ public class ToolStatsCommon {
 
                 if (!stack.is(TAG_IGNORE_HARVEST_LEVEL) && this.config.showHarvestLevel) {
 
-                    additions.add(this.harvestLevelCache.computeIfAbsent(harvestLevelResolver.apply(tieredItem.getTier()), lvl -> new TranslatableComponent("tooltip.toolstats.harvestlevel", lvl).withStyle(ChatFormatting.DARK_GREEN)));
+                    additions.add(this.harvestLevelCache.computeIfAbsent(harvestLevelResolver.apply(tieredItem.getTier()), lvl -> Component.translatable("tooltip.toolstats.harvestlevel", lvl).withStyle(ChatFormatting.DARK_GREEN)));
                 }
 
                 if (!stack.is(TAG_IGNORE_DIG_SPEED) && this.config.showEfficiency) {
 
-                    additions.add(digSpeedCache.computeIfAbsent(tieredItem.getTier(), tier -> new TranslatableComponent("tooltip.toolstats.efficiency", Constants.DECIMAL_FORMAT.format(tier.getSpeed())).withStyle(ChatFormatting.DARK_GREEN)));
+                    additions.add(digSpeedCache.computeIfAbsent(tieredItem.getTier(), tier -> Component.translatable("tooltip.toolstats.efficiency", Constants.DECIMAL_FORMAT.format(tier.getSpeed())).withStyle(ChatFormatting.DARK_GREEN)));
                 }
             }
 
@@ -80,7 +78,7 @@ public class ToolStatsCommon {
 
                 if (enchantability > 0) {
 
-                    additions.add(this.enchantabilityCache.computeIfAbsent(enchantability, enchLvl -> new TranslatableComponent("tooltip.toolstats.enchantability", enchLvl).withStyle(ChatFormatting.DARK_GREEN)));
+                    additions.add(this.enchantabilityCache.computeIfAbsent(enchantability, enchLvl -> Component.translatable("tooltip.toolstats.enchantability", enchLvl).withStyle(ChatFormatting.DARK_GREEN)));
                 }
             }
 
@@ -90,7 +88,7 @@ public class ToolStatsCommon {
 
                 if (repairCost > 0) {
 
-                    additions.add(this.repairCostCache.computeIfAbsent(repairCost, cost -> new TranslatableComponent("tooltip.toolstats.repaircost", cost).withStyle(ChatFormatting.DARK_GREEN)));
+                    additions.add(this.repairCostCache.computeIfAbsent(repairCost, cost -> Component.translatable("tooltip.toolstats.repaircost", cost).withStyle(ChatFormatting.DARK_GREEN)));
                 }
             }
 
@@ -98,7 +96,7 @@ public class ToolStatsCommon {
 
                 if (this.config.alwaysShowDurability || stack.isDamaged()) {
 
-                    additions.add(new TranslatableComponent("item.durability", stack.getMaxDamage() - stack.getDamageValue(), stack.getMaxDamage()));
+                    additions.add(Component.translatable("item.durability", stack.getMaxDamage() - stack.getDamageValue(), stack.getMaxDamage()));
                 }
             }
 
