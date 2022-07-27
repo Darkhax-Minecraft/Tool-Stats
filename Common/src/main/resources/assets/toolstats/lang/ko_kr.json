@@ -1,0 +1,6 @@
+{
+	"tooltip.toolstats.harvestlevel": " %d 수확 레벨",
+	"tooltip.toolstats.efficiency": " %s 채굴 속도",
+	"tooltip.toolstats.enchantability": " %d 마법 능력",
+	"tooltip.toolstats.repaircost": " 수리 비용: %d"
+}
