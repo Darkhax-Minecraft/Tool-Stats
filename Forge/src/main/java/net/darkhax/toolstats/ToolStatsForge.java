@@ -34,7 +34,8 @@ public class ToolStatsForge {
 
         if (Environment.get().getDist() == Dist.CLIENT) {
 
-            final ToolStatsCommon toolStats = new ToolStatsCommon(FMLPaths.CONFIGDIR.get(), ItemStack::getItemEnchantability, this::getTierLevel);
+
+            final ToolStatsCommon toolStats = new ToolStatsCommon(FMLPaths.CONFIGDIR.get(), ItemStack::getEnchantmentValue, this::getTierLevel);
         }
     }
 
