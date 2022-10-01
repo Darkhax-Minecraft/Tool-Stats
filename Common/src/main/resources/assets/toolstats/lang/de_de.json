@@ -1,0 +1,6 @@
+{
+  "tooltip.toolstats.harvestlevel": " %d Ertragslevel",
+  "tooltip.toolstats.efficiency": " %s Abbaugeschwindigkeit",
+  "tooltip.toolstats.enchantability": " %d Verzauberbarkeit",
+  "tooltip.toolstats.repaircost": " Reparaturkosten: %d"
+}
