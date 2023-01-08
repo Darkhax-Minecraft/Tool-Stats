@@ -2,6 +2,7 @@ package net.darkhax.toolstats;
 
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -79,7 +80,7 @@ public class ToolStatsForge {
 
     private static boolean isTagEmpty(TagKey<Block> key) {
 
-        final Optional<HolderSet.Named<Block>> holders = Registry.BLOCK.getTag(key);
+        final Optional<HolderSet.Named<Block>> holders = BuiltInRegistries.BLOCK.getTag(key);
         return holders == null || holders.isEmpty() || holders.get().size() <= 0;
     }
 }

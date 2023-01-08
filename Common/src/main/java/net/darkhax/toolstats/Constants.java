@@ -13,6 +13,5 @@ public class Constants {
     public static final String MOD_NAME = "Tool Stats";
     public static final Logger LOG = LogManager.getLogger(MOD_NAME);
     public static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("#.##");
-
     public static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 }
