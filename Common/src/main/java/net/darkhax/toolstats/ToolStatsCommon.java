@@ -3,6 +3,7 @@ package net.darkhax.toolstats;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.darkhax.bookshelf.api.Services;
+import net.darkhax.bookshelf.api.event.IEventHelper;
 import net.darkhax.toolstats.config.ConfigSchema;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -11,11 +12,18 @@ import net.minecraft.client.gui.screens.inventory.EnchantmentScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.AxeItem;
+import net.minecraft.world.item.HoeItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.PickaxeItem;
+import net.minecraft.world.item.ShearsItem;
+import net.minecraft.world.item.ShovelItem;
+import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.TieredItem;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.block.Blocks;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -37,7 +45,6 @@ public class ToolStatsCommon {
     private final Function<ItemStack, Integer> enchantabilityResolver;
     private final Function<Tier, Integer> harvestLevelResolver;
 
-    private final Map<Tier, Component> digSpeedCache = new HashMap<>();
     private final Int2ObjectMap<Component> enchantabilityCache = new Int2ObjectOpenHashMap<>();
     private final Int2ObjectMap<Component> repairCostCache = new Int2ObjectOpenHashMap<>();
     private final Int2ObjectMap<Component> harvestLevelCache = new Int2ObjectOpenHashMap<>();
@@ -48,7 +55,7 @@ public class ToolStatsCommon {
         this.enchantabilityResolver = enchantabilityResolver;
         this.harvestLevelResolver = harvestLevelResolver;
 
-        Services.EVENTS.addItemTooltipListener(this::displayTooltipInfo);
+        Services.EVENTS.addItemTooltipListener(this::displayTooltipInfo, IEventHelper.Ordering.BEFORE);
     }
 
     private void displayTooltipInfo(ItemStack stack, List<Component> tooltip, TooltipFlag context) {
@@ -59,19 +66,26 @@ public class ToolStatsCommon {
 
             final List<Component> additions = new ArrayList<>();
 
+            // Harvest Level
             if (stack.getItem() instanceof TieredItem tieredItem) {
 
                 if (!stack.is(TAG_IGNORE_HARVEST_LEVEL) && this.config.showHarvestLevel) {
 
                     additions.add(this.harvestLevelCache.computeIfAbsent(harvestLevelResolver.apply(tieredItem.getTier()), lvl -> Component.translatable("tooltip.toolstats.harvestlevel", lvl).withStyle(ChatFormatting.DARK_GREEN)));
                 }
+            }
 
-                if (!stack.is(TAG_IGNORE_DIG_SPEED) && this.config.showEfficiency) {
+            // Dig Speed
+            if (!stack.is(TAG_IGNORE_DIG_SPEED) && this.config.showEfficiency) {
 
-                    additions.add(digSpeedCache.computeIfAbsent(tieredItem.getTier(), tier -> Component.translatable("tooltip.toolstats.efficiency", Constants.DECIMAL_FORMAT.format(tier.getSpeed())).withStyle(ChatFormatting.DARK_GREEN)));
+                float speed = getDestroySpeed(stack, stack.getItem());
+
+                if (speed > 0f) {
+                    additions.add(Component.translatable("tooltip.toolstats.efficiency", Constants.DECIMAL_FORMAT.format(speed)).withStyle(ChatFormatting.DARK_GREEN));
                 }
             }
 
+            // Enchantability
             if (!stack.is(TAG_IGNORE_ENCHANTABILITY) && this.config.showEnchantability && (this.config.alwaysShowEnchantability || Minecraft.getInstance().screen instanceof EnchantmentScreen)) {
 
                 final int enchantability = this.enchantabilityResolver.apply(stack);
@@ -82,6 +96,7 @@ public class ToolStatsCommon {
                 }
             }
 
+            // Repair Cost
             if (!stack.is(TAG_IGNORE_REPAIR_COST) && this.config.showRepairCost && (this.config.alwaysShowRepairCost || Minecraft.getInstance().screen instanceof AnvilScreen)) {
 
                 final int repairCost = stack.getBaseRepairCost();
@@ -92,6 +107,7 @@ public class ToolStatsCommon {
                 }
             }
 
+            // Durability
             if (!context.isAdvanced() && !stack.is(TAG_IGNORE_DURABILITY) && this.config.showDurability && stack.isDamageableItem()) {
 
                 if (this.config.alwaysShowDurability || stack.isDamaged()) {
@@ -105,6 +121,39 @@ public class ToolStatsCommon {
                 tooltip.addAll(getInsertOffset(context.isAdvanced(), tooltip.size(), stack), additions);
             }
         }
+    }
+
+    private static float getDestroySpeed(ItemStack stack, Item item) {
+
+        if (item instanceof PickaxeItem pickaxe) {
+            return pickaxe.getDestroySpeed(stack, Blocks.COBBLESTONE.defaultBlockState());
+        }
+
+        if (item instanceof AxeItem axe) {
+            return axe.getDestroySpeed(stack, Blocks.OAK_PLANKS.defaultBlockState());
+        }
+
+        if (item instanceof ShovelItem shovel) {
+            return shovel.getDestroySpeed(stack, Blocks.DIRT.defaultBlockState());
+        }
+
+        if (item instanceof HoeItem hoe) {
+            return hoe.getDestroySpeed(stack, Blocks.MUSHROOM_STEM.defaultBlockState());
+        }
+
+        if (item instanceof SwordItem sword) {
+            return sword.getDestroySpeed(stack, Blocks.COBWEB.defaultBlockState());
+        }
+
+        if (item instanceof ShearsItem shears) {
+            return shears.getDestroySpeed(stack, Blocks.OAK_LEAVES.defaultBlockState());
+        }
+
+        if (item instanceof TieredItem tieredItem) {
+            return tieredItem.getTier().getSpeed();
+        }
+
+        return 0f;
     }
 
     private static int getInsertOffset(boolean advanced, int tooltipSize, ItemStack stack) {
