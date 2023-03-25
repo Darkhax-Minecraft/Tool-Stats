@@ -18,3 +18,4 @@ run/
 .settings/
 *.launch
 /bin/
+.idea/
