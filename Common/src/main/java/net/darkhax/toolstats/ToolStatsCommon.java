@@ -112,7 +112,7 @@ public class ToolStatsCommon {
 
                 if (this.config.alwaysShowDurability || stack.isDamaged()) {
 
-                    additions.add(Component.translatable("item.durability", stack.getMaxDamage() - stack.getDamageValue(), stack.getMaxDamage()));
+                    additions.add(Component.translatable("item.durability", stack.getMaxDamage() - stack.getDamageValue(), stack.getMaxDamage()).withStyle(ChatFormatting.DARK_GRAY));
                 }
             }
 
