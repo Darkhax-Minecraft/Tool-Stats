@@ -1,12 +1,15 @@
 plugins {
-    id 'net.minecraftforge.gradle' version '5.1.+'
-    id 'net.darkhax.curseforgegradle' version '1.1.15'
-    id 'com.modrinth.minotaur' version '2.8.0'
+    id 'net.minecraftforge.gradle'
+    id 'net.darkhax.curseforgegradle'
+    id 'com.modrinth.minotaur'
+    id 'org.spongepowered.mixin'
 }
 
 apply from: '../gradle/patreon.gradle'
 
-archivesBaseName = "${mod_name}-Forge-${minecraft_version}"
+base {
+    archivesName = "${mod_name}-Forge-${minecraft_version}"
+}
 
 minecraft {
 
@@ -28,7 +31,7 @@ minecraft {
             mods {
                 modClientRun {
                     source sourceSets.main
-                    source project(":Common").sourceSets.main
+                    source project(':common').sourceSets.main
                 }
             }
         }
@@ -48,7 +51,7 @@ minecraft {
             mods {
                 modServerRun {
                     source sourceSets.main
-                    source project(":Common").sourceSets.main
+                    source project(':common').sourceSets.main
                 }
             }
         }
@@ -59,18 +62,26 @@ dependencies {
 
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
     implementation fg.deobf("net.darkhax.bookshelf:Bookshelf-Forge-${project.ext.minecraft_version}:${project.ext.bookshelf_version}")
-    compileOnly project(":Common")
+    compileOnly project(':common')
 
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 }
 
-tasks.withType(JavaCompile) {
-    source(project(":Common").sourceSets.main.allSource)
+tasks.withType(JavaCompile).configureEach {
+    source(project(':common').sourceSets.main.allSource)
+}
+
+tasks.withType(Javadoc).configureEach {
+    source(project(':common').sourceSets.main.allJava)
+}
+
+tasks.named("sourcesJar", Jar) {
+    from(project(':common').sourceSets.main.allSource)
 }
 
 processResources {
 
-    from project(":Common").sourceSets.main.resources
+    from project(':common').sourceSets.main.resources
 
     def buildProps = project.properties.clone()
 
@@ -127,8 +138,6 @@ jar {
 // -- Mixin Support
 if (project.ext.mixin_enabled) {
 
-    apply plugin: 'org.spongepowered.mixin'
-
     mixin {
 
         // Tells the mixin plugin where to put the generated refmap file.
@@ -143,20 +152,9 @@ project.publishing {
 
         mavenJava(MavenPublication) {
 
-            artifactId project.archivesBaseName
-
-            // Base mod archive.
-            artifact jar
-
-            // Adds the sources as an artifact.
-            artifact project.sourcesJar {
-                classifier 'sources'
-            }
-
-            // Adds the javadocs as an artifact.
-            artifact project.javadocJar {
-                classifier 'javadoc'
-            }
+            artifactId = base.archivesName.get()
+            from components.java
+            fg.component(it)
         }
     }
 
