@@ -1,7 +1,5 @@
 package net.darkhax.toolstats;
 
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.darkhax.bookshelf.api.Services;
 import net.darkhax.toolstats.config.ConfigSchema;
 import net.minecraft.ChatFormatting;
@@ -19,9 +17,9 @@ import net.minecraft.world.item.TooltipFlag;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 
 public class ToolStatsCommon {
@@ -37,10 +35,10 @@ public class ToolStatsCommon {
     private final Function<ItemStack, Integer> enchantabilityResolver;
     private final Function<Tier, Integer> harvestLevelResolver;
 
-    private final Map<Tier, Component> digSpeedCache = new HashMap<>();
-    private final Int2ObjectMap<Component> enchantabilityCache = new Int2ObjectOpenHashMap<>();
-    private final Int2ObjectMap<Component> repairCostCache = new Int2ObjectOpenHashMap<>();
-    private final Int2ObjectMap<Component> harvestLevelCache = new Int2ObjectOpenHashMap<>();
+    private final Map<Tier, Component> digSpeedCache = new ConcurrentHashMap<>();
+    private final Map<Integer, Component> enchantabilityCache = new ConcurrentHashMap<>();
+    private final Map<Integer, Component> repairCostCache = new ConcurrentHashMap<>();
+    private final Map<Integer, Component> harvestLevelCache = new ConcurrentHashMap<>();
 
     public ToolStatsCommon(Path configDir, Function<ItemStack, Integer> enchantabilityResolver, Function<Tier, Integer> harvestLevelResolver) {
 
@@ -52,8 +50,6 @@ public class ToolStatsCommon {
     }
 
     private void displayTooltipInfo(ItemStack stack, List<Component> tooltip, TooltipFlag context) {
-
-        final Item item = stack.getItem();
 
         if (!stack.is(TAG_IGNORE)) {
 
