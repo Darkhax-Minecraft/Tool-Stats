@@ -138,7 +138,7 @@ public class ToolStatsCommon {
         }
 
         if (item instanceof SwordItem sword) {
-            return sword.getDestroySpeed(stack, Blocks.COBWEB.defaultBlockState());
+            return sword.getDestroySpeed(stack, Blocks.SUNFLOWER.defaultBlockState());
         }
 
         if (item instanceof ShearsItem shears) {
