@@ -17,6 +17,7 @@ public class ConfigSchema {
 
     public boolean showHarvestLevel = true;
     public boolean showEfficiency = true;
+    public boolean showSwordEfficiency = false;
 
     public boolean showDurability = true;
     public boolean alwaysShowDurability = false;

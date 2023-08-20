@@ -72,7 +72,7 @@ public class ToolStatsCommon {
             }
 
             // Dig Speed
-            if (!stack.is(TAG_IGNORE_DIG_SPEED) && this.config.showEfficiency) {
+            if (!stack.is(TAG_IGNORE_DIG_SPEED) && this.config.showEfficiency && (!(stack.getItem() instanceof SwordItem) || this.config.showSwordEfficiency)) {
 
                 float speed = getDestroySpeed(stack, stack.getItem());
 
