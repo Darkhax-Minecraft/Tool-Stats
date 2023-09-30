@@ -1,0 +1,6 @@
+{
+    "tooltip.toolstats.harvestlevel": " 採掘レベル %d",
+    "tooltip.toolstats.efficiency": " 採掘速度 %s",
+    "tooltip.toolstats.enchantability": " エンチャント適正補正値 %d",
+    "tooltip.toolstats.repaircost": " 修理コスト: %d"
+}
