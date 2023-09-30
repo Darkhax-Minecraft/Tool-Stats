@@ -1,0 +1,6 @@
+{
+	"tooltip.toolstats.harvestlevel": " %d 挖掘等级",
+	"tooltip.toolstats.efficiency": " %s 挖掘倍率",
+	"tooltip.toolstats.enchantability": " %d 附魔能力",
+	"tooltip.toolstats.repaircost": " 累积惩罚：%d"
+}
