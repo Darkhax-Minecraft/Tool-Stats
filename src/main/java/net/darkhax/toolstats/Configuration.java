@@ -13,7 +13,8 @@ public class Configuration {
     private final BooleanValue showEfficiency;
     private final BooleanValue showRepairCost;
     private final BooleanValue showDurability;
-    
+    private final BooleanValue factorEfficiencyEnchantment;
+
     public Configuration() {
         
         final ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
@@ -33,6 +34,9 @@ public class Configuration {
         
         builder.comment("Should mining efficiency be shown?");
         this.showEfficiency = builder.define("show-efficiency", true);
+
+        builder.comment("Should the efficiency enchantment be factored into the mining efficiency stat?");
+        this.factorEfficiencyEnchantment = builder.define("factor-efficiency-enchantment", true);
         
         builder.comment("Should repair cost be shown in the anvil GUI?");
         this.showRepairCost = builder.define("show-repair-cost", true);
@@ -77,5 +81,10 @@ public class Configuration {
     public boolean shouldShowDurability () {
         
         return this.showDurability.get();
+    }
+
+    public boolean factorEfficiency() {
+
+        return this.factorEfficiencyEnchantment.get();
     }
 }

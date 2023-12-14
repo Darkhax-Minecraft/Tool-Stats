@@ -4,6 +4,8 @@ import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.EnchantmentScreen;
 import net.minecraft.client.gui.screen.inventory.AnvilScreen;
+import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.enchantment.Enchantments;
 import net.minecraft.item.AxeItem;
 import net.minecraft.item.HoeItem;
 import net.minecraft.item.IItemTier;
@@ -68,7 +70,7 @@ public class ToolStats {
 
             if (this.config.shouldShowEfficiency()) {
 
-                additions.add(new TranslationTextComponent("tooltip.toolstats.efficiency", this.format.format(getDestroySpeed(stack, item))).mergeStyle(TextFormatting.DARK_GREEN));
+                additions.add(new TranslationTextComponent("tooltip.toolstats.efficiency", this.format.format(getDestroySpeed(stack))).mergeStyle(TextFormatting.DARK_GREEN));
             }
         }
 
@@ -98,6 +100,24 @@ public class ToolStats {
         }
 
         event.getToolTip().addAll(getInsertOffset(event.getFlags().isAdvanced(), event.getToolTip().size(), stack), additions);
+    }
+
+    private float getDestroySpeed(ItemStack stack) {
+
+        float destroySpeed = getDestroySpeed(stack, stack.getItem());
+
+        // Account for the efficiency enchantment using similar code to Mojang.
+        if (config.factorEfficiency() && destroySpeed > 1.0F) {
+
+            final int efficiencyLevel = EnchantmentHelper.getEnchantmentLevel(Enchantments.EFFICIENCY, stack);
+
+            if (efficiencyLevel > 0) {
+
+                destroySpeed += (float)(efficiencyLevel * efficiencyLevel + 1);
+            }
+        }
+
+        return destroySpeed;
     }
 
     private static float getDestroySpeed(ItemStack stack, Item item) {
