@@ -21,6 +21,8 @@ import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.TieredItem;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.block.Blocks;
 
 import java.nio.file.Path;
@@ -74,7 +76,7 @@ public class ToolStatsCommon {
             // Dig Speed
             if (!stack.is(TAG_IGNORE_DIG_SPEED) && this.config.showEfficiency) {
 
-                float speed = getDestroySpeed(stack, stack.getItem());
+                float speed = getDestroySpeed(stack);
 
                 if (speed > 0f) {
                     additions.add(Component.translatable("tooltip.toolstats.efficiency", Constants.DECIMAL_FORMAT.format(speed)).withStyle(ChatFormatting.DARK_GREEN));
@@ -117,6 +119,24 @@ public class ToolStatsCommon {
                 tooltip.addAll(getInsertOffset(context.isAdvanced(), tooltip.size(), stack), additions);
             }
         }
+    }
+
+    private float getDestroySpeed(ItemStack stack) {
+
+        float destroySpeed = getDestroySpeed(stack, stack.getItem());
+
+        // Account for the efficiency enchantment using similar code to Mojang.
+        if (config.factorEfficiencyEnchantment && destroySpeed > 1.0F) {
+
+            final int efficiencyLevel = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.BLOCK_EFFICIENCY, stack);
+
+            if (efficiencyLevel > 0) {
+
+                destroySpeed += (float)(efficiencyLevel * efficiencyLevel + 1);
+            }
+        }
+
+        return destroySpeed;
     }
 
     private static float getDestroySpeed(ItemStack stack, Item item) {
