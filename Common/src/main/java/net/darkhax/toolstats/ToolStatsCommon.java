@@ -13,11 +13,20 @@ import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.Tag;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.AxeItem;
+import net.minecraft.world.item.HoeItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.PickaxeItem;
+import net.minecraft.world.item.ShearsItem;
+import net.minecraft.world.item.ShovelItem;
+import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.TieredItem;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.item.enchantment.Enchantments;
+import net.minecraft.world.level.block.Blocks;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -39,7 +48,6 @@ public class ToolStatsCommon {
     private final Function<ItemStack, Integer> enchantabilityResolver;
     private final Function<Tier, Integer> harvestLevelResolver;
 
-    private final Map<Tier, Component> digSpeedCache = new HashMap<>();
     private final Int2ObjectMap<Component> enchantabilityCache = new Int2ObjectOpenHashMap<>();
     private final Int2ObjectMap<Component> repairCostCache = new Int2ObjectOpenHashMap<>();
     private final Int2ObjectMap<Component> harvestLevelCache = new Int2ObjectOpenHashMap<>();
@@ -70,7 +78,11 @@ public class ToolStatsCommon {
 
                 if (!stack.is(TAG_IGNORE_DIG_SPEED) && this.config.showEfficiency) {
 
-                    additions.add(digSpeedCache.computeIfAbsent(tieredItem.getTier(), tier -> new TranslatableComponent("tooltip.toolstats.efficiency", Constants.DECIMAL_FORMAT.format(tier.getSpeed())).withStyle(ChatFormatting.DARK_GREEN)));
+                    float speed = getDestroySpeed(stack);
+
+                    if (speed > 0f) {
+                        additions.add(new TranslatableComponent("tooltip.toolstats.efficiency", Constants.DECIMAL_FORMAT.format(speed)).withStyle(ChatFormatting.DARK_GREEN));
+                    }
                 }
             }
 
@@ -107,6 +119,57 @@ public class ToolStatsCommon {
                 tooltip.addAll(getInsertOffset(context.isAdvanced(), tooltip.size(), stack), additions);
             }
         }
+    }
+
+    private float getDestroySpeed(ItemStack stack) {
+
+        float destroySpeed = getDestroySpeed(stack, stack.getItem());
+
+        // Account for the efficiency enchantment using similar code to Mojang.
+        if (config.factorEfficiencyEnchantment && destroySpeed > 1.0F) {
+
+            final int efficiencyLevel = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.BLOCK_EFFICIENCY, stack);
+
+            if (efficiencyLevel > 0) {
+
+                destroySpeed += (float)(efficiencyLevel * efficiencyLevel + 1);
+            }
+        }
+
+        return destroySpeed;
+    }
+
+    private static float getDestroySpeed(ItemStack stack, Item item) {
+
+        if (item instanceof PickaxeItem pickaxe) {
+            return pickaxe.getDestroySpeed(stack, Blocks.COBBLESTONE.defaultBlockState());
+        }
+
+        if (item instanceof AxeItem axe) {
+            return axe.getDestroySpeed(stack, Blocks.OAK_PLANKS.defaultBlockState());
+        }
+
+        if (item instanceof ShovelItem shovel) {
+            return shovel.getDestroySpeed(stack, Blocks.DIRT.defaultBlockState());
+        }
+
+        if (item instanceof HoeItem hoe) {
+            return hoe.getDestroySpeed(stack, Blocks.MUSHROOM_STEM.defaultBlockState());
+        }
+
+        if (item instanceof SwordItem sword) {
+            return sword.getDestroySpeed(stack, Blocks.COBWEB.defaultBlockState());
+        }
+
+        if (item instanceof ShearsItem shears) {
+            return shears.getDestroySpeed(stack, Blocks.OAK_LEAVES.defaultBlockState());
+        }
+
+        if (item instanceof TieredItem tieredItem) {
+            return tieredItem.getTier().getSpeed();
+        }
+
+        return 0f;
     }
 
     private static int getInsertOffset(boolean advanced, int tooltipSize, ItemStack stack) {
