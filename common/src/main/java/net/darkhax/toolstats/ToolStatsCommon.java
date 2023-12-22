@@ -7,11 +7,16 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.inventory.AnvilScreen;
 import net.minecraft.client.gui.screens.inventory.EnchantmentScreen;
+import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.AxeItem;
 import net.minecraft.world.item.HoeItem;
+import net.minecraft.world.item.HorseArmorItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.PickaxeItem;
@@ -114,6 +119,13 @@ public class ToolStatsCommon {
                 }
             }
 
+            if (config.showHorseArmorProtection && stack.getItem() instanceof HorseArmorItem horseArmor) {
+
+                additions.add(CommonComponents.EMPTY);
+                additions.add(Component.translatable("tooltip.toolstats.when_on.horse").withStyle(ChatFormatting.GRAY));
+                additions.add(Component.translatable("attribute.modifier.plus." + AttributeModifier.Operation.ADDITION.toValue(), ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(horseArmor.getProtection()), Component.translatable(Attributes.ARMOR.getDescriptionId())).withStyle(ChatFormatting.BLUE));
+            }
+
             if (!additions.isEmpty()) {
 
                 tooltip.addAll(getInsertOffset(context.isAdvanced(), tooltip.size(), stack), additions);
@@ -132,7 +144,7 @@ public class ToolStatsCommon {
 
             if (efficiencyLevel > 0) {
 
-                destroySpeed += (float)(efficiencyLevel * efficiencyLevel + 1);
+                destroySpeed += (float) (efficiencyLevel * efficiencyLevel + 1);
             }
         }
 

@@ -22,6 +22,8 @@ public class ConfigSchema {
     public boolean showDurability = true;
     public boolean alwaysShowDurability = false;
 
+    public boolean showHorseArmorProtection = true;
+
     public static ConfigSchema load(File configFile) {
 
         ConfigSchema config = new ConfigSchema();

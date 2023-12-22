@@ -2,5 +2,6 @@
   "tooltip.toolstats.harvestlevel": " %d Harvest Level",
   "tooltip.toolstats.efficiency": " %s Digging Speed",
   "tooltip.toolstats.enchantability": " %d Enchantability",
-  "tooltip.toolstats.repaircost": " Repair Cost: %d"
+  "tooltip.toolstats.repaircost": " Repair Cost: %d",
+  "tooltip.toolstats.when_on.horse": "When on Horse:"
 }
