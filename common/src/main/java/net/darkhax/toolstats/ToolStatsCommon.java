@@ -7,6 +7,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.inventory.AnvilScreen;
 import net.minecraft.client.gui.screens.inventory.EnchantmentScreen;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -210,6 +211,6 @@ public class ToolStatsCommon {
 
     private static TagKey<Item> itemTag(String key) {
 
-        return Services.TAGS.itemTag(new ResourceLocation(Constants.MOD_ID, key));
+        return TagKey.create(Registries.ITEM, new ResourceLocation(Constants.MOD_ID, key));
     }
 }
