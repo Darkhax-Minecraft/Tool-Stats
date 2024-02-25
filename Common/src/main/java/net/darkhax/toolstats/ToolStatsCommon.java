@@ -150,7 +150,7 @@ public class ToolStatsCommon {
         }
 
         if (item instanceof HoeItem hoe) {
-            return hoe.getDestroySpeed(stack, Blocks.MUSHROOM_STEM.defaultBlockState());
+            return hoe.getDestroySpeed(stack, Blocks.DRIED_KELP_BLOCK.defaultBlockState());
         }
 
         if (item instanceof SwordItem sword) {
