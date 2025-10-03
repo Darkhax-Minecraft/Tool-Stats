@@ -200,33 +200,6 @@ curseforge {
     }
 }
 
-tasks.getByName("curseforge").doLast {
-    
-    try {
-    
-        // Reads the file ID given to us by CurseForge
-        def newFileId = tasks.getByName("curseforge${curse_project}").property('mainArtifact').fileID
-    
-        def webhook = new Webhook(findProperty('discordCFWebhook'), "${project.findProperty('mod_name')} Gradle Upload");
-        
-        def message = new Message();        
-        message.setUsername(findProperty('mod_name'));
-        message.setContent("${project.findProperty('mod_name')} ${version} for Minecraft ${findProperty('minecraft_version')} has been released! The download will be public soon.");
-        
-        def embed = new Embed();
-        embed.addField('Download', "${project.findProperty('curse_page')}/files/$newFileId", false);
-        embed.addField('Change Log', "${getGitChangelog() ?: 'Unavailable :('}", false);
-        embed.setColor(0xFF8000);           
-        message.addEmbed(embed);
-
-        webhook.sendMessage(message);
-    }
-    
-    catch (IOException e) {
-        println 'Failed to push to the Discord webhook.'
-    }
-}
-
 task updateVersionTracker {
 
     onlyIf {
@@ -257,33 +230,3 @@ task updateVersionTracker {
         println "VersionCheck Response: ${req.getInputStream().getText()}"
     }
 }
-
-// Jar Signing
-import net.minecraftforge.gradle.common.task.SignJar
-
-task signJar(type: SignJar, dependsOn: jar) {
-
-    onlyIf {
-    
-        project.hasProperty('keyStore')
-    }
-    
-    if (project.hasProperty('keyStore')) {
-    
-        project.logger.info('Signing jar ' + jar.archivePath.getName());
-    
-        keyStore = project.findProperty('keyStore')
-        alias = project.findProperty('keyStoreAlias')
-        storePass = project.findProperty('keyStorePass')
-        keyPass = project.findProperty('keyStoreKeyPass')
-        inputFile = jar.archivePath
-        outputFile = jar.archivePath
-    }
-
-    else {
-    
-        project.logger.warn('Could not sign ' + jar.archivePath.getName() + '. No keyStore property could be found')
-    }
-}
-
-build.dependsOn signJar
