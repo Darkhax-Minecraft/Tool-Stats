@@ -135,7 +135,7 @@ public class ToolStats {
         }
 
         if (item instanceof HoeItem) {
-            return item.getDestroySpeed(stack, Blocks.MUSHROOM_STEM.getDefaultState());
+            return item.getDestroySpeed(stack, Blocks.SHROOMLIGHT.getDefaultState());
         }
 
         if (item instanceof SwordItem) {
