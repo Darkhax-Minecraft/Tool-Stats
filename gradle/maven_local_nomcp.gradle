@@ -63,7 +63,7 @@ publishing {
     repositories {
         maven {
             // Sets the maven URL
-            url findProperty('localMaven')
+            url System.getenv("local_maven_url")
         }
     }
 }
