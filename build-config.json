@@ -1,0 +1,41 @@
+{
+  "mod": {
+    "name": "ToolStats",
+    "group": "net.darkhax.toolstats",
+    "authors": [
+      "Darkhax"
+    ],
+    "id": "toolstats",
+    "license": "LGPL V2.1",
+    "description": "Adds tool stats to item tooltips.",
+    "repo": "https://github.com/Darkhax-Minecraft/Tool-Stats",
+    "client": false
+  },
+  "curseforge": {
+    "slug": "tool-stats",
+    "id": "377109"
+  },
+  "modrinth": {
+    "slug": "tool-stats",
+    "id": "vuGFx44e"
+  },
+  "dependencies": [
+    {
+      "name": "Prickle",
+      "type": "required",
+      "maven": {
+        "common": "net.darkhax.pricklemc:prickle-common-26.1.2:26.1.2.2",
+        "neoforge": "net.darkhax.pricklemc:prickle-neoforge-26.1.2:26.1.2.2",
+        "fabric": "net.darkhax.pricklemc:prickle-fabric-26.1.2:26.1.2.2"
+      },
+      "curseforge": {
+        "slug": "prickle",
+        "id": "1023259"
+      },
+      "modrinth": {
+        "slug": "prickle",
+        "id": "aaRl8GiW"
+      }
+    }
+  ]
+}

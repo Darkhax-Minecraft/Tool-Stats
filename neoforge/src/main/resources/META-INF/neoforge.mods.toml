@@ -1,0 +1,36 @@
+modLoader = "javafml"
+license = "LGPL V2.1"
+issueTrackerURL = "https://github.com/Darkhax-Minecraft/Tool-Stats/issues"
+
+[[mods]]
+modId = "toolstats"
+version = "26.1.2.0"
+displayName = "ToolStats"
+updateJSONURL = "https://updates.blamejared.com/get?n=toolstats&gv=26.1.2&ml=neoforge"
+displayURL = "https://www.curseforge.com/minecraft/mc-mods/tool-stats"
+logoFile = "logo_toolstats.png"
+logoBlur = false
+credits = "This project is made possible with Patreon support from players like you. Thank you! lothrazar, techsquirrel, Keyana , Darkosto, Tobias Ward, noobanidus"
+authors = "Darkhax"
+description = "Adds tool stats to item tooltips."
+
+[[mixins]]
+config = "toolstats.common.mixins.json"
+
+[[mixins]]
+config = "toolstats.neoforge.mixins.json"
+
+[[dependencies.toolstats]]
+modId = "minecraft"
+type = "required"
+versionRange = "26.1"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.toolstats]]
+modId = "neoforge"
+type = "required"
+versionRange = "[26.1.0.1-beta,)"
+ordering = "NONE"
+side = "BOTH"
+
