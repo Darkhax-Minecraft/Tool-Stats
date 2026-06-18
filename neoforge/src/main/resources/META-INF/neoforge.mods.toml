@@ -4,9 +4,9 @@ issueTrackerURL = "https://github.com/Darkhax-Minecraft/Tool-Stats/issues"
 
 [[mods]]
 modId = "toolstats"
-version = "26.1.2.0"
+version = "26.2.0.0"
 displayName = "ToolStats"
-updateJSONURL = "https://updates.blamejared.com/get?n=toolstats&gv=26.1.2&ml=neoforge"
+updateJSONURL = "https://updates.blamejared.com/get?n=toolstats&gv=26.2&ml=neoforge"
 displayURL = "https://www.curseforge.com/minecraft/mc-mods/tool-stats"
 logoFile = "logo_toolstats.png"
 logoBlur = false
@@ -23,14 +23,14 @@ config = "toolstats.neoforge.mixins.json"
 [[dependencies.toolstats]]
 modId = "minecraft"
 type = "required"
-versionRange = "26.1"
+versionRange = "26.2"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.toolstats]]
 modId = "neoforge"
 type = "required"
-versionRange = "[26.1.0.1-beta,)"
+versionRange = "[26.2.0.1-beta,)"
 ordering = "NONE"
 side = "BOTH"
 
