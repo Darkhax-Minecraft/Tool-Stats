@@ -1,6 +1,7 @@
 {
-  "tooltip.toolstats.harvestlevel": " %d Уровень добычи",
-  "tooltip.toolstats.efficiency": " %s Скорость добычи",
-  "tooltip.toolstats.enchantability": " %d Зачаровываемость",
-  "tooltip.toolstats.repaircost": " Стоимость ремонта: %d"
+  "tooltip.toolstats.harvestlevel": "Уровень добычи: %d",
+  "tooltip.toolstats.efficiency": "Скорость добычи: %s",
+  "tooltip.toolstats.enchantability": "Зачаровываемость: %d",
+  "tooltip.toolstats.repaircost": "Стоимость ремонта: %d",
+  "tooltip.toolstats.when_on.horse": "Когда на лошади:"
 }
